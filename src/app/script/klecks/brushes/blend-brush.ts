@@ -265,8 +265,8 @@ export class BlendBrush {
         size = Math.max(0.5, size);
         const x1 = Math.max(0, Math.floor(x - size));
         const y1 = Math.max(0, Math.floor(y - size));
-        const x2 = Math.min(this.context.canvas.width - 1, Math.ceil(x + size - 1));
-        const y2 = Math.min(this.context.canvas.height - 1, Math.ceil(y + size - 1));
+        const x2 = Math.min(this.context.canvas.width - 1, Math.ceil(x + size));
+        const y2 = Math.min(this.context.canvas.height - 1, Math.ceil(y + size));
         if (x1 > x2 || y1 > y2) {
             return undefined;
         }
