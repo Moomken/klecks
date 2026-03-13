@@ -862,7 +862,6 @@ export class KlApp {
                                     const doOverwrite = await new Promise<boolean>(
                                         (resolve, reject) => {
                                             showModal({
-                                                target: document.body,
                                                 type: 'warning',
                                                 message: LANG('file-storage-overwrite-confirm'),
                                                 buttons: [LANG('file-storage-overwrite'), 'Cancel'],
@@ -968,13 +967,18 @@ export class KlApp {
                 }
                 if (comboStr === 'b') {
                     event.preventDefault();
-                    applyUncommitted();
                     const prevMode = this.easel.getTool();
+                    const prevMainTabId = mainTabRow?.getOpenedTabId();
+                    applyUncommitted();
                     this.easel.setTool('brush');
                     this.toolspaceToolRow.setActive('brush');
                     mainTabRow?.open('brush');
                     updateMainTabVisibility();
-                    brushTabRow.open(prevMode === 'brush' ? getNextBrushId() : currentBrushId);
+                    brushTabRow.open(
+                        prevMode === 'brush' && prevMainTabId === 'brush'
+                            ? getNextBrushId()
+                            : currentBrushId,
+                    );
                 }
                 if (comboStr === 'g') {
                     event.preventDefault();
@@ -1004,11 +1008,21 @@ export class KlApp {
                 }
                 if (comboStr === 'l') {
                     event.preventDefault();
+                    const prevTool = this.easel.getTool();
+                    const prevSelectMode = klAppSelect.getSelectMode();
+                    const prevMainTabId = mainTabRow?.getOpenedTabId();
                     applyUncommitted();
                     this.easel.setTool('select');
                     this.toolspaceToolRow.setActive('select');
                     mainTabRow?.open('select');
                     updateMainTabVisibility();
+                    if (
+                        prevTool === 'select' &&
+                        prevSelectMode === 'select' &&
+                        prevMainTabId === 'select'
+                    ) {
+                        klAppSelect.getSelectUi().setMode('transform');
+                    }
                 }
                 if (comboStr === 'x') {
                     event.preventDefault();
@@ -1139,7 +1153,6 @@ export class KlApp {
                             closeFunc();
                         };
                         KL.popup({
-                            target: this.rootEl,
                             message: '<b>' + LANG('upload-failed') + '</b>',
                             div: BB.el({
                                 content: [
@@ -1160,7 +1173,6 @@ export class KlApp {
                     };
 
                     KL.popup({
-                        target: this.rootEl,
                         message: LANG('submit-prompt'),
                         buttons: [LANG('submit'), 'Cancel'],
                         callback: async (result) => {
@@ -1672,7 +1684,6 @@ export class KlApp {
         const onOpenBrowserStorage = async () => {
             const showFailureMessage = () => {
                 KL.popup({
-                    target: this.rootEl,
                     message: LANG('file-storage-open-failed'),
                     type: 'error',
                 });
@@ -1704,7 +1715,6 @@ export class KlApp {
                 if (meta && openedProjectIds.includes(meta.projectId)) {
                     doOpen = await new Promise<boolean>((resolve, reject) => {
                         showModal({
-                            target: document.body,
                             message: LANG('file-storage-open-confirmation'),
                             buttons: [LANG('file-storage-open'), 'Cancel'],
                             callback: async (result) => {
@@ -1726,7 +1736,6 @@ export class KlApp {
 
             let closeLoader: (() => void) | undefined;
             KL.popup({
-                target: this.rootEl,
                 message: LANG('loading'),
                 callback: (result) => {
                     closeLoader = undefined;

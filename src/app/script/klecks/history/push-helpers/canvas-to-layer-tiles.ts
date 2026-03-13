@@ -1,9 +1,9 @@
 import { THistoryEntryLayerTile } from '../history.types';
 import { HISTORY_TILE_SIZE } from '../kl-history';
 import { getTileFromCanvas } from './get-tile-from-canvas';
-import { TBounds } from '../../../bb/bb-types';
 import { getChangedTiles } from './changed-tiles';
 import { createImageDataTile } from '../image-data-tile';
+import { TIndexBounds } from '../../../bb/bb-types';
 
 export function canvasAndChangedTilesToLayerTiles(
     canvas: HTMLCanvasElement,
@@ -28,11 +28,11 @@ export function canvasAndChangedTilesToLayerTiles(
 export function canvasToLayerTiles(canvas: HTMLCanvasElement): THistoryEntryLayerTile[];
 export function canvasToLayerTiles(
     canvas: HTMLCanvasElement,
-    bounds?: TBounds, // canvas area that changed. if undefined -> everything changed
+    bounds?: TIndexBounds, // canvas area that changed. if undefined -> everything changed
 ): (THistoryEntryLayerTile | undefined)[];
 export function canvasToLayerTiles(
     canvas: HTMLCanvasElement,
-    bounds?: TBounds, // canvas area that changed. if undefined -> everything changed
+    bounds?: TIndexBounds, // canvas area that changed. if undefined -> everything changed
 ): (THistoryEntryLayerTile | undefined)[] {
     if (bounds) {
         const changedTiles = getChangedTiles(bounds, canvas.width, canvas.height);

@@ -30,7 +30,6 @@ import {
 import { KeyListener, sameKeys } from './input/key-listener';
 import { PointerListener } from './input/pointer-listener';
 import {
-    canvasBounds,
     convertToAlphaChannelCanvas,
     copyCanvas,
     createCheckerCanvas,
@@ -61,10 +60,10 @@ import {
     unfocusAnyInput,
 } from './base/ui';
 import {
-    boundsInArea,
     clamp,
     dist,
     distSquared,
+    indexBoundsInArea,
     intDxy,
     isInsideRect,
     lenSquared,
@@ -138,7 +137,7 @@ export const BB = {
     roundUneven,
     round,
     updateBounds,
-    boundsInArea,
+    indexBoundsInArea,
 
     // ---- line ----
     projectPointOnLine,
@@ -159,7 +158,6 @@ export const BB = {
     resizeCanvas,
     convertToAlphaChannelCanvas,
     freeCanvas,
-    canvasBounds,
 
     // ---- color ----
     HSV,

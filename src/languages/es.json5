@@ -1499,6 +1499,10 @@
     original: 'Erase',
     value: 'Borrar'
   },
+  'select-transform-warp': {
+    original: 'Warp',
+    value: ''
+  },
   'select-transform-clone': {
     original: 'Clone',
     value: 'Clonar'
@@ -1517,8 +1521,8 @@
   },
   'select-transform-empty': {
     original: 'Selected area on active layer is empty.',
-    value: 'El área seleccionada en la capa activa está vacía.' 
-  }, 
+    value: 'El área seleccionada en la capa activa está vacía.'
+  },
   'save-reminder-title': {
     hint: 'Save Reminder is a popup that shows up after 20 minutes of not saving. Allows user to save on the spot.',
     original: 'Unsaved Work',

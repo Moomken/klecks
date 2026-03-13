@@ -1499,6 +1499,10 @@
     original: 'Erase',
     value: 'Apagar'
   },
+  'select-transform-warp': {
+    original: 'Warp',
+    value: ''
+  },
   'select-transform-clone': {
     original: 'Clone',
     value: 'Clonar'

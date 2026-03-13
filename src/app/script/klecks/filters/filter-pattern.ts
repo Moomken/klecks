@@ -16,6 +16,7 @@ import { css, throwIfNull } from '../../bb/base/base';
 import { testIsSmall } from '../ui/utils/test-is-small';
 import { getPreviewHeight, getPreviewWidth, MEDIUM_PREVIEW } from '../ui/utils/preview-size';
 import { canvasToLayerTiles } from '../history/push-helpers/canvas-to-layer-tiles';
+import { getCanvasBounds } from '../../bb/base/canvas';
 
 export type TFilterPatternInput = {
     x: number;
@@ -158,7 +159,7 @@ export const filterPattern = {
         let lastDrawnSettings: TFilterPatternInput | undefined;
 
         // determine bounds
-        const bounds = BB.canvasBounds(context);
+        const bounds = getCanvasBounds(context);
         // adjust settings according to bounds
         if (
             // use layer bounds if:

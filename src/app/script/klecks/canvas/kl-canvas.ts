@@ -16,13 +16,12 @@ import {
 import { drawProject } from './draw-project';
 import { LANG } from '../../language/language';
 import { drawGradient } from '../image-operations/gradient-tool';
-import { TBounds, TRect } from '../../bb/bb-types';
 import { MultiPolygon } from 'polygon-clipping';
 import { compose, identity, Matrix, rotate, scale, translate } from 'transformation-matrix';
 import { getSelectionPath2d } from '../../bb/multi-polygon/get-selection-path-2d';
 import { transformMultiPolygon } from '../../bb/multi-polygon/transform-multi-polygon';
 import { getMultiPolyBounds } from '../../bb/multi-polygon/get-multi-polygon-bounds';
-import { integerBounds } from '../../bb/math/math';
+import { coordinateBoundsToIndexBounds, rectToBounds } from '../../bb/math/math';
 import { matrixToTuple } from '../../bb/math/matrix-to-tuple';
 import { getEraseColor } from '../brushes/erase-color';
 import { HISTORY_TILE_SIZE, KlHistory } from '../history/kl-history';
@@ -36,25 +35,14 @@ import { createFillColorTiles } from '../history/create-fill-color-tiles';
 import { updateLayersViaComposed } from './update-layers-via-composed';
 import { isHistoryEntryOpacityChange } from '../history/push-helpers/is-history-entry-opacity-change';
 import { isHistoryEntryVisibilityChange } from '../history/push-helpers/is-history-entry-visibility-change';
-import { transformBounds } from '../../bb/transform/transform-bounds';
+import { transformCoordinateBounds } from '../../bb/transform/transform-coordinate-bounds';
 import { createLayerMap } from '../history/push-helpers/create-layer-map';
 import { Eyedropper } from './eyedropper';
 import { copyImageDataTile } from '../history/image-data-tile';
 import { randomUuid } from '../../bb/base/base';
-import { getSelectionBounds } from '../select-tool/get-selection-bounds';
 import { translateMultiPolygon } from '../../bb/multi-polygon/translate-multi-polygon';
 import { getBinaryMask } from '../select-tool/get-binary-mask';
-
-// TODO remove in 2026
-// workaround for chrome bug https://bugs.chromium.org/p/chromium/issues/detail?id=1281185
-// reported 2021-13 (v96), fixed 2022-02 (v99)
-// affects: source-in, source-out, destination-in, destination-atop
-function workaroundForChromium1281185(ctx: CanvasRenderingContext2D): void {
-    ctx.save();
-    ctx.fillStyle = 'rgba(0,0,0,0.01)';
-    ctx.fillRect(-0.9999999, -0.9999999, 1, 1);
-    ctx.restore();
-}
+import { TIndexBounds } from '../../bb/bb-types';
 
 export const MAX_LAYERS = 16;
 
@@ -120,22 +108,6 @@ export class KlCanvas {
                 layerMap: {},
             },
             this.klHistory.getComposed(),
-        );
-    }
-
-    getSelectionOrFallback(): MultiPolygon {
-        return (
-            this.selection ?? [
-                [
-                    [
-                        [0, 0],
-                        [this.width, 0],
-                        [this.width, this.height],
-                        [0, this.height],
-                        [0, 0],
-                    ],
-                ],
-            ]
         );
     }
 
@@ -682,8 +654,6 @@ export class KlCanvas {
             }
 
             bottomCtx.restore();
-
-            mixModeStr && workaroundForChromium1281185(bottomCtx);
         }
         this.klHistory.pause(true);
         this.removeLayer(layerTopIndex);
@@ -880,11 +850,11 @@ export class KlCanvas {
             ctx.globalCompositeOperation = compositeOperation as GlobalCompositeOperation;
         }
 
-        let bounds: TBounds | undefined;
+        let bounds: TIndexBounds | undefined;
         if (doClipSelection && this.selection) {
             const selectionPath = getSelectionPath2d(this.selection);
             ctx.clip(selectionPath);
-            bounds = integerBounds(getMultiPolyBounds(this.selection));
+            bounds = getMultiPolyBounds(this.selection, 'index');
         }
 
         const fill = 'rgba(' + colorObj.r + ',' + colorObj.g + ',' + colorObj.b + ',1)';
@@ -1106,7 +1076,7 @@ export class KlCanvas {
         const selectionPath = this.selection
             ? new Path2D(getSelectionPath2d(this.selection))
             : undefined;
-        const bounds = integerBounds(drawShape(targetLayer.context, shapeObj, selectionPath));
+        const bounds = drawShape(targetLayer.context, shapeObj, selectionPath);
 
         // debug
         /*const ctx = this.layers[layerIndex].context;
@@ -1152,21 +1122,14 @@ export class KlCanvas {
 
         // add 2, because rect not entirely accurate
         const padding = 2 + (p.stroke ? p.stroke.lineWidth / 2 : 0);
-        let changedBounds = transformBounds(
-            {
-                x1: rect.x,
-                y1: rect.y,
-                x2: rect.x + rect.width,
-                y2: rect.y + rect.height,
-            },
+        const changedBounds = transformCoordinateBounds(
+            rectToBounds(rect, 'coordinate'),
             compose(translate(p.x, p.y), rotate(-p.angleRad)),
         );
-        changedBounds = integerBounds({
-            x1: changedBounds.x1 - padding,
-            y1: changedBounds.y1 - padding,
-            x2: changedBounds.x2 + padding,
-            y2: changedBounds.y2 + padding,
-        });
+        changedBounds.x1 -= padding;
+        changedBounds.y1 -= padding;
+        changedBounds.x2 += padding;
+        changedBounds.y2 += padding;
 
         // const ctx = this.layers[layerIndex].context;
         // ctx.save();
@@ -1179,7 +1142,7 @@ export class KlCanvas {
                 layerMap: createLayerMap(this.layers, {
                     layerId: targetLayer.id,
                     attributes: ['tiles'],
-                    bounds: changedBounds,
+                    bounds: coordinateBoundsToIndexBounds(changedBounds),
                 }),
             });
         }
@@ -1193,14 +1156,14 @@ export class KlCanvas {
         const targetLayer = this.layers[p.layerIndex];
         const ctx = targetLayer.context;
         ctx.save();
-        let bounds: TBounds | undefined;
+        let bounds: TIndexBounds | undefined;
         if (p.useSelection && this.selection) {
             const selectionPath = getSelectionPath2d(this.selection);
             ctx.clip(selectionPath);
-            bounds = integerBounds(getMultiPolyBounds(this.selection));
+            bounds = getMultiPolyBounds(this.selection, 'index');
         }
         if (p.useAlphaLock) {
-            ctx.globalCompositeOperation = 'source-in';
+            ctx.globalCompositeOperation = 'source-atop';
         } else {
             ctx.globalCompositeOperation = 'destination-out';
         }
@@ -1376,12 +1339,6 @@ export class KlCanvas {
 
     getSelection(): KlCanvas['selection'] {
         return this.selection;
-    }
-
-    getSelectionArea(layerIndex: number): TRect | undefined {
-        const srcLayer = this.layers[layerIndex];
-        const selection = this.getSelectionOrFallback();
-        return getSelectionBounds(selection, srcLayer.context);
     }
 
     /**

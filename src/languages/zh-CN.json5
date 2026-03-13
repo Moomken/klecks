@@ -1499,6 +1499,10 @@
     original: 'Erase',
     value: '擦除'
   },
+  'select-transform-warp': {
+    original: 'Warp',
+    value: ''
+  },
   'select-transform-clone': {
     original: 'Clone',
     value: '复制'

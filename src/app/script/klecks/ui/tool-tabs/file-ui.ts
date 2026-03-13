@@ -203,7 +203,6 @@ export class FileUi {
                 this.browserStorageUi = new BrowserStorageUi({
                     projectStore: p.projectStore,
                     getProject: p.getProject,
-                    klRootEl: p.klRootEl,
                     applyUncommitted: this.applyUncommitted,
                     onOpen: p.onOpenBrowserStorage,
                     onStored: () => p.onStoredToBrowserStorage(),

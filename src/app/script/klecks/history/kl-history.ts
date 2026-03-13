@@ -46,7 +46,7 @@ export class KlHistory {
 
     // up to a certain threshold an undo step counts as free, and doesn't get you closer to undo
     // step limit. E.g. renaming a layer has virtually no impact on memory or performance.
-    private readonly isFreeThresholdBytes: number = 2048; // 2MB if there were 1000 steps like that
+    private readonly isFreeThresholdBytes: number = 2048; // 2kb -> 1000 steps are 2MB
 
     private entries: THistoryEntry[]; // diffs or what changed each step. 0 is oldest
     private index: number = 0; // current action the user is on.
@@ -108,8 +108,13 @@ export class KlHistory {
         this.listeners.push(l);
     }
 
+    // doesn't push if: paused or if entry is empty
     push(entryData: THistoryEntryData, replaceTop?: boolean): void {
         if (this.pauseStack > 0) {
+            return;
+        }
+        if (Object.keys(entryData).length === 0) {
+            // no change -> noop
             return;
         }
         const entry: THistoryEntry = {

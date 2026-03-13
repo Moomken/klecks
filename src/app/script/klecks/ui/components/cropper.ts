@@ -1,5 +1,5 @@
 import { BB } from '../../../bb/bb';
-import { TBounds, TRect, TVector2D } from '../../../bb/bb-types';
+import { TIndexBounds, TRect, TVector2D } from '../../../bb/bb-types';
 import { KeyListener } from '../../../bb/input/key-listener';
 import { PointerListener } from '../../../bb/input/pointer-listener';
 import { css } from '../../../bb/base/base';
@@ -78,7 +78,7 @@ export class Cropper {
         maxH: number;
         scale: number; // float, zoom
         callback: (val: TRect) => void;
-        init?: TBounds;
+        init?: TIndexBounds;
     }) {
         this.x = p.x;
         this.y = p.y;

@@ -7,8 +7,8 @@ import { TFilterApply, TFilterGetDialogParam, TFilterGetDialogResult, TRgba } fr
 import { LANG } from '../../language/language';
 import { TRect } from '../../bb/bb-types';
 import { SMALL_PREVIEW } from '../ui/utils/preview-size';
-import { intBoundsWithinArea } from '../../bb/math/math';
 import { getMultiPolyBounds } from '../../bb/multi-polygon/get-multi-polygon-bounds';
+import { indexBoundsInArea } from '../../bb/math/math';
 
 export type TFilterCropExtendInput = {
     left: number;
@@ -54,15 +54,15 @@ export const filterCropExtend = {
 
         const selection = klCanvas.getSelection();
         let selectionBounds = selection
-            ? intBoundsWithinArea(
-                  getMultiPolyBounds(selection),
+            ? indexBoundsInArea(
+                  getMultiPolyBounds(selection, 'index'),
                   klCanvas.getWidth(),
                   klCanvas.getHeight(),
               )
             : undefined;
         if (selectionBounds) {
-            const boundsWidth = selectionBounds.x2 - selectionBounds.x1;
-            const boundsHeight = selectionBounds.y2 - selectionBounds.y1;
+            const boundsWidth = selectionBounds.x2 - selectionBounds.x1 + 1;
+            const boundsHeight = selectionBounds.y2 - selectionBounds.y1 + 1;
             if (boundsWidth <= maxWidth && boundsHeight <= maxHeight) {
                 top = selectionBounds.y1;
                 right = selectionBounds.x2 - klCanvas.getWidth();
