@@ -344,8 +344,7 @@ export class KlAppSelect {
 
         this.selectUi = new SelectUi({
             onChangeMode: (mode) => {
-                this.selectMode = mode;
-                if (this.selectMode === 'select') {
+                if (mode === 'select') {
                     const layerIndex = throwIfNull(
                         this.klCanvas.getLayerIndex(this.getCurrentLayerCtx().canvas),
                     );
@@ -423,7 +422,7 @@ export class KlAppSelect {
                     this.selectTool.setSelection(selection);
                     this.selectUi.setHasSelection(!!selection);
                     this.onUpdateProject();
-                    this.easelSelect.setMode(this.selectMode);
+                    this.easelSelect.setMode(mode);
                 } else {
                     // -> transform
 
@@ -467,7 +466,7 @@ export class KlAppSelect {
                     this.updateUiLayerList();
                     this.selectUi.setMoveToLayer(undefined);
                     this.onUpdateProject();
-                    this.easelSelect.setMode(this.selectMode);
+                    this.easelSelect.setMode(mode);
                     if (this.transformState.selection) {
                         const transformedSelection = transformSelection(
                             this.transformState.transform,
@@ -478,6 +477,7 @@ export class KlAppSelect {
                     this.easelSelect.initialiseTransform(this.transformState.transform);
                     this.updateSelectUi();
                 }
+                this.selectMode = mode;
                 return true;
             },
             onChangeBooleanOperation: (operation) => {
