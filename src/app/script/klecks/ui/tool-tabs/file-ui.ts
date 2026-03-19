@@ -353,11 +353,34 @@ export class FileUi {
     }
 
     triggerImport(): void {
-        const pwd = prompt('Enter password to import an image:');
-        if (pwd === 'password') {
-            this.importInput && this.importInput.click();
-        } else if (pwd !== null) {
-            alert('Incorrect password');
-        }
+        const inputEl = document.createElement('input');
+        inputEl.type = 'password';
+        inputEl.placeholder = 'Password';
+        inputEl.style.width = '100%';
+        inputEl.style.padding = '8px';
+        inputEl.style.boxSizing = 'border-box';
+        inputEl.style.marginTop = '10px';
+        
+        const popupContent = document.createElement('div');
+        popupContent.textContent = 'Enter password to import an image:';
+        popupContent.appendChild(inputEl);
+
+        KL.popup({
+            message: '',
+            div: popupContent,
+            buttons: ['Ok', 'Cancel'],
+            clickOnEnter: 'Ok',
+            autoFocus: false,
+            callback: (res) => {
+                if (res === 'Ok') {
+                    if (inputEl.value === 'password') {
+                        this.importInput && this.importInput.click();
+                    } else {
+                        setTimeout(() => alert('Incorrect password'), 10);
+                    }
+                }
+            }
+        });
+        setTimeout(() => inputEl.focus(), 50);
     }
 }
