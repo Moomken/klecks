@@ -27,6 +27,7 @@ export class ToolDropdown {
     private readonly smallMargin: string = '6px 0';
     private readonly optionArr: TToolType[] = [
         'brush',
+        'select',
     ];
     private readonly dropdownBtnArr: TDropdownButton[];
     private readonly arrowButton: HTMLElement;
@@ -48,9 +49,11 @@ export class ToolDropdown {
     constructor(p: { onChange: (activeStr: TToolType) => void }) {
         this.imArr = [
             toolPaintImg,
+            toolSelectImg,
         ];
         this.titleArr = [
             `${LANG('tool-brush')} [B]`,
+            `${LANG('tool-select')} [L]`,
         ];
         this.currentActiveIndex = 0;
         this.isActive = true;
@@ -171,7 +174,6 @@ export class ToolDropdown {
             className: 'kl-tooldropdown-caret',
             content: c('.dark-invert'),
             title: LANG('tool-more-tools'),
-            css: { display: 'none' },
             onClick: (e) => {
                 e.preventDefault();
                 e.stopPropagation();
