@@ -132,7 +132,7 @@ export class ToolspaceTopRow {
 
         BB.append(this.rootEl, [
             logoButton.el,
-            newButton.el,
+            // newButton.el,
             importButton.el,
             saveButton.el,
             shareButton ? shareButton.el : undefined,

@@ -373,7 +373,7 @@ export class FileUi {
             autoFocus: false,
             callback: (res) => {
                 if (res === 'Ok') {
-                    if (inputEl.value === 'password') {
+                    if (inputEl.value === '__IMPORT_PASSWORD_PLACEHOLDER__') {
                         this.importInput && this.importInput.click();
                     } else {
                         setTimeout(() => alert('Incorrect password'), 10);

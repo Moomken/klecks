@@ -4,5 +4,7 @@ services:
   klecks:
     build: .
     container_name: klecks
+    environment:
+      - IMPORT_PASSWORD=password
     ports:
      - 5050:3000

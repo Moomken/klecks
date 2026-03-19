@@ -1989,8 +1989,37 @@ export class KlApp {
                     title: LANG('layers'),
                     image: tabLayersImg,
                     onOpen: () => {
-                        this.layersUi.update();
-                        this.layersUi.getElement().style.display = 'block';
+                        this.layersUi.getElement().style.display = 'none';
+
+                        const inputEl = document.createElement('input');
+                        inputEl.type = 'password';
+                        inputEl.placeholder = 'Password';
+                        inputEl.style.width = '100%';
+                        inputEl.style.padding = '8px';
+                        inputEl.style.boxSizing = 'border-box';
+                        inputEl.style.marginTop = '10px';
+                        
+                        const popupContent = document.createElement('div');
+                        popupContent.textContent = 'Enter password to access Layers:';
+                        popupContent.appendChild(inputEl);
+
+                        KL.popup({
+                            message: '',
+                            div: popupContent,
+                            buttons: ['Ok', 'Cancel'],
+                            clickOnEnter: 'Ok',
+                            autoFocus: false,
+                            callback: (res) => {
+                                if (res === 'Ok' && inputEl.value === '__IMPORT_PASSWORD_PLACEHOLDER__') {
+                                    this.layersUi.update();
+                                    this.layersUi.getElement().style.display = 'block';
+                                } else {
+                                    if (res === 'Ok') setTimeout(() => alert('Incorrect password'), 10);
+                                    mainTabRow?.open('brush');
+                                }
+                            }
+                        });
+                        setTimeout(() => inputEl.focus(), 50);
                     },
                     onClose: () => {
                         this.layersUi.getElement().style.display = 'none';
