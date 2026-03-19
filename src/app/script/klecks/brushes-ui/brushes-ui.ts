@@ -17,10 +17,10 @@ export const BRUSHES_UI: {
     [key: string]: TBrushUi<any>;
 } = {
     penBrush: penBrushUi,
-    blendBrush: blendBrushUi,
-    sketchyBrush: sketchyBrushUi,
-    pixelBrush: pixelBrushUi,
-    chemyBrush: chemyBrushUi,
-    smudgeBrush: smudgeBrushUi,
+    // blendBrush: blendBrushUi,
+    // sketchyBrush: sketchyBrushUi,
+    // pixelBrush: pixelBrushUi,
+    // chemyBrush: chemyBrushUi,
+    // smudgeBrush: smudgeBrushUi,
     eraserBrush: eraserBrushUi,
 };

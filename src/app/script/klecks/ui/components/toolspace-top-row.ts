@@ -136,7 +136,7 @@ export class ToolspaceTopRow {
             importButton.el,
             saveButton.el,
             shareButton ? shareButton.el : undefined,
-            helpButton.el,
+            // helpButton.el,
         ]);
     }
 

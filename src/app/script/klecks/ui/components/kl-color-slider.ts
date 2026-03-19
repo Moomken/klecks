@@ -150,6 +150,7 @@ export class KlColorSlider {
         const divH = BB.el({
             className: 'kl-color-picker__h',
             css: {
+                display: 'none',
                 overflow: 'hidden',
                 position: 'relative',
                 width: this.width + 'px',
@@ -216,10 +217,10 @@ export class KlColorSlider {
         this.SVContainer = BB.el({
             className: 'kl-color-picker__sv',
             css: {
+                display: 'none',
                 width: this.width + 'px',
                 height: this.svHeight + 'px',
                 overflow: 'hidden',
-                display: 'block',
                 position: 'relative',
                 cursor: 'crosshair',
             },
@@ -298,6 +299,7 @@ export class KlColorSlider {
             className: 'color-picker-preview-button',
             title: LANG('manual-color-input'),
             css: {
+                display: 'none',
                 height: '100%',
                 width: this.height + 'px',
                 lineHeight: this.height + 'px',

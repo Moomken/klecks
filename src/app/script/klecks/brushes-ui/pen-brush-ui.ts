@@ -226,7 +226,7 @@ export const penBrushUi = (function () {
                 BB.el({
                     content: [scatterSlider.getElement(), pressureScatterToggle],
                     css: {
-                        display: 'flex',
+                        display: 'none',
                         justifyContent: 'space-between',
                         alignItems: 'center',
                     },

@@ -27,11 +27,6 @@ export class ToolDropdown {
     private readonly smallMargin: string = '6px 0';
     private readonly optionArr: TToolType[] = [
         'brush',
-        'paintBucket',
-        'gradient',
-        'text',
-        'shape',
-        'select',
     ];
     private readonly dropdownBtnArr: TDropdownButton[];
     private readonly arrowButton: HTMLElement;
@@ -53,19 +48,9 @@ export class ToolDropdown {
     constructor(p: { onChange: (activeStr: TToolType) => void }) {
         this.imArr = [
             toolPaintImg,
-            toolFillImg,
-            toolGradientImg,
-            toolTextImg,
-            toolShapeImg,
-            toolSelectImg,
         ];
         this.titleArr = [
             `${LANG('tool-brush')} [B]`,
-            `${LANG('tool-paint-bucket')} [G]`,
-            `${LANG('tool-gradient')} [G]`,
-            `${LANG('tool-text')} [T]`,
-            `${LANG('tool-shape')} [U]`,
-            `${LANG('tool-select')} [L]`,
         ];
         this.currentActiveIndex = 0;
         this.isActive = true;
@@ -186,6 +171,7 @@ export class ToolDropdown {
             className: 'kl-tooldropdown-caret',
             content: c('.dark-invert'),
             title: LANG('tool-more-tools'),
+            css: { display: 'none' },
             onClick: (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -218,7 +204,7 @@ export class ToolDropdown {
             css: {
                 position: 'absolute',
                 width: '100%',
-                height: 100 * (this.optionArr.length - 1) + '%',
+                height: this.optionArr.length > 1 ? 100 * (this.optionArr.length - 1) + '%' : '0%',
                 top: '100%',
                 left: '0',
                 zIndex: '-1',
@@ -246,7 +232,7 @@ export class ToolDropdown {
                 title: p.title,
                 css: {
                     padding: '10px 0',
-                    height: 100 / (this.optionArr.length - 1) + '%',
+                    height: this.optionArr.length > 1 ? 100 / (this.optionArr.length - 1) + '%' : '100%',
                     boxSizing: 'border-box',
                 },
                 onClick: (e) => {
@@ -310,7 +296,7 @@ export class ToolDropdown {
         }
 
         const showDropdown = () => {
-            if (DIALOG_COUNTER.get() > 0) {
+            if (DIALOG_COUNTER.get() > 0 || this.optionArr.length <= 1) {
                 return;
             }
             DIALOG_COUNTER.increase(0.5);

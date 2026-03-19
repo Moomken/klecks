@@ -107,7 +107,7 @@ export class EmbedToolspaceTopRow {
             contain: true,
         });
 
-        this.rootEl.append(submitButton.el, leftRightButton.el, helpButton.el);
+        this.rootEl.append(submitButton.el, leftRightButton.el); // helpButton.el hidden
     }
 
     getElement(): HTMLElement {
