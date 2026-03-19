@@ -2003,6 +2003,7 @@ export class KlApp {
                     id: 'edit',
                     title: LANG('tab-edit'),
                     image: tabEditImg,
+                    isVisible: false,
                     onOpen: () => {
                         editUi.show();
                     },
@@ -2016,7 +2017,7 @@ export class KlApp {
                 {
                     id: 'file',
                     label: LANG('tab-file'),
-                    isVisible: !!fileUi,
+                    isVisible: false,
                     onOpen: () => {
                         if (!fileUi) {
                             return;

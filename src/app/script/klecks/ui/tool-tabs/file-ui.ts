@@ -120,14 +120,7 @@ export class FileUi {
                 custom: {
                     tabIndex: '-1',
                 },
-                onClick: () => {
-                    const pwd = prompt('Enter password to import an image:');
-                    if (pwd === 'password') {
-                        this.importInput!.click();
-                    } else if (pwd !== null) {
-                        alert('Incorrect password');
-                    }
-                },
+                onClick: () => this.triggerImport(),
             });
             this.importInput = BB.el({
                 tagName: 'input',
@@ -360,6 +353,11 @@ export class FileUi {
     }
 
     triggerImport(): void {
-        this.importInput && this.importInput.click();
+        const pwd = prompt('Enter password to import an image:');
+        if (pwd === 'password') {
+            this.importInput && this.importInput.click();
+        } else if (pwd !== null) {
+            alert('Incorrect password');
+        }
     }
 }
