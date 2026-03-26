@@ -15,6 +15,8 @@ import {
     KL_INDEXED_DB_VERSION,
 } from './klecks/storage/kl-indexed-db';
 import { KlRecoveryManager } from './klecks/storage/kl-recovery-manager';
+import layer1Url from 'url:/src/app/img/layer1.jpeg';
+import layer2Url from 'url:/src/app/img/layer2.png';
 
 function showInitError(e: Error): void {
     const el = document.createElement('div');
@@ -66,6 +68,60 @@ function showInitError(e: Error): void {
         // in case an extension manipulated the page
         const loadingScreenEl = document.getElementById('loading-screen');
         loadingScreenEl?.remove();
+
+        if (!project) {
+            const loadImage = (url: string): Promise<HTMLImageElement> => {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.onerror = () => reject(new Error('Failed to load ' + url));
+                    img.src = url;
+                });
+            };
+
+            try {
+                const [img1, img2] = await Promise.all([
+                    loadImage(layer1Url),
+                    loadImage(layer2Url)
+                ]);
+
+                const createLayerCanvas = (img: HTMLImageElement) => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    if (ctx) ctx.drawImage(img, 0, 0);
+                    return canvas;
+                };
+
+                const canvas1 = createLayerCanvas(img1);
+                const canvas2 = createLayerCanvas(img2);
+
+                project = {
+                    projectId: 'default-' + Date.now(),
+                    width: Math.max(img1.width, img2.width),
+                    height: Math.max(img1.height, img2.height),
+                    layers: [
+                        {
+                            name: LANG('layers-layer') + ' 1',
+                            opacity: 1,
+                            isVisible: true,
+                            mixModeStr: 'source-over',
+                            image: canvas1,
+                        },
+                        {
+                            name: LANG('layers-layer') + ' 2',
+                            opacity: 1,
+                            isVisible: true,
+                            mixModeStr: 'source-over',
+                            image: canvas2,
+                        }
+                    ]
+                };
+            } catch (e) {
+                console.error('Failed to load default layers', e);
+            }
+        }
 
         const klApp = new KlApp({ project, klRecoveryManager });
         document.body.append(klApp.getElement());
